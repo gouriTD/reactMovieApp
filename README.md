@@ -6,7 +6,7 @@
 2) For tablet mode , grid with 4 columns is supported and for views with further wider screen size, 6 column grid is supprted.
 3) The main app layout has 3 main components:
 
-    a)  A static header with search bar, 
+    a)  A fixed header with search bar, 
 
         1) search bar takes user key strokes initiates a search when differnce of 2 key input event is greater than a pre-defined time.
 
