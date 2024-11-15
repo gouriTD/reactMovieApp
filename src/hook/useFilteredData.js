@@ -9,12 +9,12 @@ import {useLayoutEffect,useState} from 'react'
 const useFilteredData = (searchTerm,dataList)=>{
     const [filteredData,setFilteredData] = useState(dataList)
   
-    console.log(dataList)
+    // console.log(dataList)
   
     useLayoutEffect(()=>{
       const timer  = setTimeout(()=>{
         const newFilteredData = dataList.filter(item=>item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) >= 0)
-        console.log(newFilteredData)
+        // console.log(newFilteredData)
         setFilteredData(newFilteredData)
       },300)
       return ()=>clearTimeout(timer)

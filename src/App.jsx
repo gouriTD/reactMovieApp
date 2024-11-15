@@ -1,12 +1,9 @@
-import React, { lazy, useCallback, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Info, Error, MovieContent } from "./components";
 import { CONSTANTS } from "./utility/constants";
 import useFetchData from "./hook/useFetchData";
+import useRetrieveMovieData from './hook/useRetrieveMovieData'
 import "./App.css";
-import { Suspense } from "react";
-
-// Here we are lazy loading the pagination items, as it needs to be loaded when we scroll to bottom of our page.
-const Pagination = lazy(()=>import('./components/Pagination'))
 
 /**
  * Main App Container: Containing the following components:
@@ -24,41 +21,58 @@ const content_container_style =
 
 function App() {
   const [currentSelectedPage, setCurrentSelectedPage] = useState(1);
+  const [isAtBottom, setIsAtBottom] = useState(false);
   const pageUrl = `${CONSTANTS.BASE_URL}${CONSTANTS.DATA}page${currentSelectedPage}.json`;
-  let content = { contentPerPage: 0, totalItems: 0, movieItems: [] };
+  // let content = { contentPerPage: 0, totalItems: 0, movieItems: [] };
 
   const { data, isLoading, error } = useFetchData(pageUrl);
+  const {movieItems,hasMoreMovie} = useRetrieveMovieData(data)
 
-  if (data) {
-    content.movieItems = data["page"]["content-items"]["content"];
-    content.contentPerPage = data["page"]["page-size-requested"];
-    content.totalItems = data["page"]["total-content-items"];
-  }
+    // Checking if via scrolling we have reached the end of the screen.
+    function checkIfAtBottom(){
+      console.log('If at bottom')
+      const scrollPosition = document.documentElement.scrollTop + window.innerHeight; // Current scroll position + viewport height
+      const documentHeight = document.documentElement.scrollHeight; // Total document height
+  
+      console.log(scrollPosition, documentHeight)
+      
+      // If we're near the bottom (allowing a small buffer of 50px)
+      if (scrollPosition >= documentHeight - 400 - 50) {
+        console.log('reached bottom of page')
+        setIsAtBottom(true);
+        console.log(hasMoreMovie)
+        if(hasMoreMovie){
+          setCurrentSelectedPage(prev=>prev+1)
+        }
+      } else {
+        setIsAtBottom(false);
+      }
+    };
+  
 
-  const handlePageSelection = useCallback((pageNumber) => {
-    setCurrentSelectedPage(pageNumber);
-  }, []);
+  useEffect(() => {
+    // Set up the scroll event listener
+    window.addEventListener('scroll', checkIfAtBottom);
+
+    // Cleanup on component unmount
+    return () => {
+      window.removeEventListener('scroll', checkIfAtBottom);
+    };
+  }, [hasMoreMovie]); // Update the scroll listener if more contents are there to be downloaded.
+
+  console.log(hasMoreMovie,isAtBottom)
+
+  console.log(movieItems.length)
 
   return (
-    <div className={container_style}>
+    <div id="content" className={container_style}>
       {isLoading && <Info className={isLoading_style}>Loading Data ...</Info>}
       {error && <Error>{error}</Error>}
 
-      {content.movieItems && content.movieItems.length > 0 && (
+      {movieItems && movieItems.length > 0 && (
         <div className={content_container_style}>
-          <MovieContent data={content.movieItems} />
+          <MovieContent data={movieItems} />
         </div>
-      )}
-      {content.totalItems > 0 && (
-        <Suspense fallback={<p>Loading...</p>}>
-           <Pagination
-          postsPerPage={content.contentPerPage}
-          length={content.totalItems}
-          selectedPage={currentSelectedPage}
-          setPageSelection={handlePageSelection}
-        />
-        </Suspense>
-       
       )}
     </div>
   );
