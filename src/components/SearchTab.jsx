@@ -19,12 +19,12 @@ function SearchTab({onInputChange,title}) {
     const handleReset = ()=>{
       inputRef.current.reset()
       onInputChange('')
-      document.getElementById('search-input').classList.add('invisible')
+      document.getElementById('search-input').classList.add('hidden')
       document.getElementById('title').classList.remove('hidden')
     }
 
     const handleOpenSearch = ()=>{
-      document.getElementById('search-input').classList.remove('invisible')
+      document.getElementById('search-input').classList.remove('hidden')
       document.getElementById('title').classList.add('hidden')
       console.log('added opening of the search')
     }
@@ -33,7 +33,7 @@ function SearchTab({onInputChange,title}) {
         <form ref={inputRef} action="#" className='w-full flex flex-row gap-10 items-center'>
         <button type='button' onClick={handleReset}><img src={backImage} alt="#" className='active:bg-gray-600' /></button>
         <h1 id='title' className='w-full text-start text-2xl'>{title}</h1>
-        <input id='search-input' type="text" onChange={handleChange} className=' bg-slate-800 w-full p-2 focus:caret-indigo-200 focus:outline-none invisible' autoFocus />
+        <input id='search-input' type="text" onChange={handleChange} className=' bg-slate-800 w-full p-2 focus:caret-indigo-200 focus:outline-none hidden' autoFocus />
         <button type='button' onClick={handleOpenSearch}><img src={searchImage} alt="#" /></button>
         </form>
         
