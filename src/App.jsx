@@ -71,7 +71,7 @@ function App() {
 
       {movieItems && movieItems.length > 0 && (
         <div className={content_container_style}>
-          <MovieContent data={movieItems} />
+          <MovieContent data={movieItems} title={data['page']['title']}/>
         </div>
       )}
     </div>

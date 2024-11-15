@@ -2,6 +2,7 @@ import {useState,useEffect} from 'react'
 const useRetrieveMovieData = (data)=>{
     const [movieItems,setMovieItems] = useState([])
     const [hasMoreMovie,setHasMoreMovie] = useState(true)
+    
     useEffect(()=>{
       if(data){
         setMovieItems(prev=>([...prev, ...data['page']['content-items']['content']]))
@@ -15,6 +16,7 @@ const useRetrieveMovieData = (data)=>{
     },[movieItems])
 
    
+    console.log(movieItems.length)
     return {movieItems,hasMoreMovie}
   }
 

@@ -21,7 +21,7 @@ function MovieCard({title , poster}) {
         <div className={image_style}>
          <img src={`https://test.create.diagnal.com/images/${poster}`} alt="movie-image" className='w-full' onError={handleImageOnError}/>
         </div>
-        <h3 className={text_style}>{title}</h3>
+        <h3 className={text_style}>{title.length > 15 ? `${title.substring(0,15)}...`:title}</h3>
     </div>
   )
 }
